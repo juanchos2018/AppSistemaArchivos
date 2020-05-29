@@ -66,11 +66,10 @@ public class Registro extends AppCompatActivity {
         listaCargos.add("Juez");
         listaCargos.add("Empleado");
         listaCargos.add("Secretaria");
-
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         adapterCargos= new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,listaCargos);
         spinnercargo.setAdapter(adapterCargos);
-
-
 
         btnconsultar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +94,7 @@ public class Registro extends AppCompatActivity {
 
     private void registrar(String dni, String nombres, String apellidos, String correo, String clave, String cargo) {
 
-        progressDialog =new ProgressDialog(this);
+
 
         if (TextUtils.isEmpty(nombres)){
             tv_nombre.setError("campo requerido");
@@ -113,7 +112,7 @@ public class Registro extends AppCompatActivity {
             Toast.makeText(this, "falta cargo", Toast.LENGTH_SHORT).show();
         }
         else{
-
+            progressDialog =new ProgressDialog(this);
             progressDialog.setTitle("Creando Cuenta");
             progressDialog.setMessage("Espera We ....");
             progressDialog.show();
@@ -123,7 +122,7 @@ public class Registro extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
                         String current_userID =  mAuth.getCurrentUser().getUid();
-                        reference = FirebaseDatabase.getInstance().getReference().child("Profesores").child(current_userID);
+                        reference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(current_userID);
                         reference.child("id_usuario").setValue(current_userID);
                         reference.child("dni_usuario").setValue(current_userID);
                         reference.child("nombre_usuario").setValue(current_userID);
@@ -222,6 +221,7 @@ public class Registro extends AppCompatActivity {
     private void cargar() {
         et_dni=(EditText)findViewById(R.id.id_etdni);
         tv_nombre=(TextView)findViewById(R.id.id_tvdnombre);
+        et_correo=(EditText)findViewById(R.id.id_etcorreo);
         btnconsultar=(Button)findViewById(R.id.id_btnconsultar);
         btnregistrar=(Button)findViewById(R.id.id_btnregistrar);
         tv_apellidpaterno=(TextView)findViewById(R.id.id_tvapellidopaterno);

@@ -12,32 +12,15 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.document.appfiles.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_archivos"
+        android:name="com.document.appfiles.ui.archivos.ArchivosFragment"
+        android:label="Archivos"
+        tools:layout="@layout/archivos_fragment" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.document.appfiles.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_clientes"
+        android:name="com.document.appfiles.ui.clientes.ClientesFragment"
+        android:label="Clientes"
+        tools:layout="@layout/clientes_fragment" />
 
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="com.document.appfiles.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
-
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="com.document.appfiles.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.document.appfiles.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
 </navigation>

@@ -43,8 +43,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:17.0.0'
     implementation 'com.google.firebase:firebase-messaging:20.1.5'
     implementation 'com.google.firebase:firebase-core:17.2.0'
-
-  //  implementation 'com.machinezoo.sourceafis:sourceafis:3.2.2'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    //  implementation 'com.machinezoo.sourceafis:sourceafis:3.2.2'
 
 
 }

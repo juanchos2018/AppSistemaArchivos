@@ -52,8 +52,7 @@ public class Principal extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send).setDrawerLayout(drawer).build();
+                R.id.nav_home,R.id.nav_archivos).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -62,8 +61,9 @@ public class Principal extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null){
-            Toast.makeText(this, "nulo", Toast.LENGTH_SHORT).show();
+            final String  user_uID = mAuth.getCurrentUser().getUid();
 
+            userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(user_uID);
         }
 
     }

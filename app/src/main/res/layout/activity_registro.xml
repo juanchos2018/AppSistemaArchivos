@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Registro">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -99,6 +104,7 @@
         <EditText
             android:id="@+id/id_etcelular"
             android:inputType="phone"
+            android:hint="celular"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -107,7 +113,8 @@
         <Spinner
             android:id="@+id/id_spincargo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
         </Spinner>
         <Button
@@ -119,5 +126,5 @@
         </Button>
         </LinearLayout>
     </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

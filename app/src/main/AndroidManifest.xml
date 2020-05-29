@@ -17,21 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SliderActivity"></activity>
-
-        <activity
-            android:name=".Clases.SplashActivity"
-           >
-
+        <activity android:name=".activitys.ListaArchivos"></activity>
+        <activity android:name=".SliderActivity" />
+        <activity android:name=".Clases.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar"  >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
-        <activity android:name=".Registro"></activity>
+        <activity android:name=".Registro" />
         <activity android:name=".activitys.Login" />
         <activity
             android:name=".Principal"
