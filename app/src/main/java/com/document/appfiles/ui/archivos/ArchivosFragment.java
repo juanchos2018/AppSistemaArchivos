@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.document.appfiles.Clases.ClsCarpetas;
 import com.document.appfiles.R;
+import com.document.appfiles.activitys.ListaArchivos;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -98,6 +100,7 @@ public class ArchivosFragment extends Fragment {
             progressDialog.setTitle("Agregajdo Carpeta");
             progressDialog.setMessage("cargando");
             progressDialog.show();
+            progressDialog.setCancelable(false);
             String key = referencecarpetas.push().getKey();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             Date date = new Date();
@@ -119,9 +122,6 @@ public class ArchivosFragment extends Fragment {
                 }
             });
         }
-
-
-
     }
     private void dialogo(){
         builder1 = new AlertDialog.Builder(getContext());
@@ -172,10 +172,22 @@ public class ArchivosFragment extends Fragment {
                         if (dataSnapshot.exists()){
                             final String nombre_carpeta=dataSnapshot.child("nombre_carpeta").getValue().toString();
                             final String fecha=dataSnapshot.child("fecha_creacion").getValue().toString();
-                            final String cantidad=dataSnapshot.child("cantidad_archivos").getValue().toString();
+                        //    final String cantidad=dataSnapshot.child("cantidad_archivos").getValue().toString();
                             items.txtnomnbrcarpeta.setText(nombre_carpeta);
                             items.txtfecha.setText(fecha);
 
+                            items.itemView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Intent intent=new Intent(getContext(), ListaArchivos.class);
+                                    Bundle bundle= new Bundle();
+                                    bundle.putString("key",key);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+
+                                }
+                            });
 
                         }
 

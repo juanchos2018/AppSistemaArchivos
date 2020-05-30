@@ -6,4 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".activitys.ListaArchivos">
 
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageButton
+            android:id="@+id/id_imgbutton"
+           android:layout_gravity="end"
+            android:src="@drawable/ic_file"
+            android:layout_width="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="50dp">
+
+        </ImageButton>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recylcercarchivos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
