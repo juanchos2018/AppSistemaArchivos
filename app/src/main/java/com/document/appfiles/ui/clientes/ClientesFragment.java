@@ -83,9 +83,6 @@ public class ClientesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View vista =inflater.inflate(R.layout.clientes_fragment, container, false);
 
-
-
-   //     tvnombre=(TextView)vista.findViewById(R.id.idnombre);
         FloatingActionButton fab = vista.findViewById(R.id.fab2);
 
 
@@ -113,7 +110,6 @@ public class ClientesFragment extends Fragment {
     private void mostrarcontactos() {
 
         Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-
         startActivityForResult(i, PICK_CONTACT_REQUEST);
     }
 
@@ -133,11 +129,11 @@ public class ClientesFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.exists()){
-                            final String nombre_carpeta=dataSnapshot.child("nomnre_cliente").getValue().toString();
+                            final String nombre_cliente=dataSnapshot.child("nombre_cliente").getValue().toString();
                             final String celular=dataSnapshot.child("celular_cliente").getValue().toString();
                             //    final String cantidad=dataSnapshot.child("cantidad_archivos").getValue().toString();
-                            items.txtnomnbrcarpeta.setText(nombre_carpeta);
-                            items.txtfecha.setText(celular);
+                            items.txtnomcliente.setText(nombre_cliente);
+                            items.txtcelular.setText(celular);
 
                         }
 
@@ -167,14 +163,14 @@ public class ClientesFragment extends Fragment {
     }
 
     public  static class Items extends RecyclerView.ViewHolder{
-        TextView txtnomnbrcarpeta,txtfecha,txtcantidad;
+        TextView txtnomcliente,txtcelular,txtcantidad;
         ImageView imgfoto;
 
         public Items(@NonNull View itemView) {
             super(itemView);
-            txtnomnbrcarpeta=(TextView)itemView.findViewById(R.id.id_nombrecarpeta);
-            txtfecha=(TextView)itemView.findViewById(R.id.id_fecha);
-            txtcantidad=(TextView)itemView.findViewById(R.id.id_cantida);
+            txtnomcliente=(TextView)itemView.findViewById(R.id.id_tvnombrecliente);
+            txtcelular=(TextView)itemView.findViewById(R.id.id_tvcelularcliente);
+
 
 
         }

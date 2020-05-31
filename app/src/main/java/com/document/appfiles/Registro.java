@@ -92,9 +92,7 @@ public class Registro extends AppCompatActivity {
         });
     }
 
-    private void registrar(String dni, String nombres, String apellidos, String correo, String clave, String cargo) {
-
-
+    private void registrar(final String dni, final String nombres, final String apellidos, final String correo, String clave, final String cargo) {
 
         if (TextUtils.isEmpty(nombres)){
             tv_nombre.setError("campo requerido");
@@ -124,12 +122,12 @@ public class Registro extends AppCompatActivity {
                         String current_userID =  mAuth.getCurrentUser().getUid();
                         reference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(current_userID);
                         reference.child("id_usuario").setValue(current_userID);
-                        reference.child("dni_usuario").setValue(current_userID);
-                        reference.child("nombre_usuario").setValue(current_userID);
-                        reference.child("apellido_usuario").setValue(current_userID);
-                        reference.child("correo_usuario").setValue(current_userID);
-                        reference.child("cargo_usuario").setValue(current_userID);
-                        reference.child("image_usuario").setValue(current_userID);
+                        reference.child("dni_usuario").setValue(dni);
+                        reference.child("nombre_usuario").setValue(nombres);
+                        reference.child("apellido_usuario").setValue(apellidos);
+                        reference.child("correo_usuario").setValue(correo);
+                        reference.child("cargo_usuario").setValue(cargo);
+                        reference.child("image_usuario").setValue("defult_image");
                         reference.child("created_at").setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -197,9 +195,7 @@ public class Registro extends AppCompatActivity {
 
                     if (apellido_paterno.equals("")){
                         final String URL2="https://quertium.com/api/v1/reniec/dni/"+dni+"?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MTM3Mw.x-jUgUBcJukD5qZgqvBGbQVMxJFUAIDroZEm4Y9uTyg";
-                    //    Toast.makeText(Registro.this, "llego nulo", Toast.LENGTH_SHORT).show();
-
-                        RequestQueue requestQueue2= Volley.newRequestQueue(getApplicationContext());
+                         RequestQueue requestQueue2= Volley.newRequestQueue(getApplicationContext());
                         StringRequest stringRequest1 =new StringRequest(Request.Method.GET,URL2,
                         new Response.Listener<String>() {
                             @Override
