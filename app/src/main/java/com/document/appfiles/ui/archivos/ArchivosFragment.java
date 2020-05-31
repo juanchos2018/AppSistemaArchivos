@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -44,6 +47,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +59,7 @@ public class ArchivosFragment extends Fragment {
 
     private ArchivosViewModel mViewModel;
     FirebaseStorage storage;
+    private final int MIS_PERMISOS = 100;
     private DatabaseReference referencecarpetas;
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
@@ -87,6 +94,9 @@ public class ArchivosFragment extends Fragment {
 
         recyclerView=vista.findViewById(R.id.recylcercarpetas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        if(solicitaPermisosVersionesSuperiores()){
+
+        }
 
         return vista;
     }
@@ -231,4 +241,35 @@ public class ArchivosFragment extends Fragment {
         }
     }
 
+    private boolean solicitaPermisosVersionesSuperiores() {
+        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.M){//validamos si estamos en android menor a 6 para no buscar los permisos
+            return true;
+        }
+
+        //validamos si los permisos ya fueron aceptados
+        if((getActivity().checkSelfPermission(WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)&&getActivity().checkSelfPermission(CAMERA)==PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+
+        if ((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)||(shouldShowRequestPermissionRationale(CAMERA)))){
+            cargarDialogoRecomendacion();
+        }else{
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MIS_PERMISOS);
+        }
+
+        return false;//implementamos el que procesa el evento dependiendo de lo que se defina aqui
+    }
+    private void cargarDialogoRecomendacion() {
+        AlertDialog.Builder dialogo=new AlertDialog.Builder(getContext());
+        dialogo.setTitle("Permisos Desactivados");
+        dialogo.setMessage("Debe conceder los permisos para el correcto funcionamiento de la App");
+
+        dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA},100);
+            }
+        });
+        dialogo.show();
+    }
 }
