@@ -52,7 +52,7 @@
 
         <EditText
             android:id="@+id/id_etdni"
-           android:text="45713875"
+           android:text=""
             android:hint="Dni"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"

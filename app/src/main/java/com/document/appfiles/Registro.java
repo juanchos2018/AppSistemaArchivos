@@ -164,7 +164,7 @@ public class Registro extends AppCompatActivity {
         }
     }
 
-    private void consultardatos(String dni) {
+    private void consultardatos(final String dni) {
         if (TextUtils.isEmpty(dni)){
             et_dni.setError("campo requerido");
             return;
@@ -177,6 +177,7 @@ public class Registro extends AppCompatActivity {
      //   String dni=et_dni.getText().toString();
         String api_represetnatees_legales="https://quertium.com/api/v1/sunat/legals/20134052989?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MTM3Mw.x-jUgUBcJukD5qZgqvBGbQVMxJFUAIDroZEm4Y9uTyg";
         String URL="https://api.reniec.cloud/dni/"+dni;
+      //  final String URL2="https://quertium.com/api/v1/reniec/dni/45713875?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MTM3Mw.x-jUgUBcJukD5qZgqvBGbQVMxJFUAIDroZEm4Y9uTyg";
         String  api_ruc="https://quertium.com/api/v1/sunat/ruc/20159981216?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MTM3Mw.x-jUgUBcJukD5qZgqvBGbQVMxJFUAIDroZEm4Y9uTyg";
         //String URL="https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCeSJh3cP6hyfY4km8E2HVmw&maxResults=25&key=AIzaSyBgYb4U8DbCAzTAaXEZ3sLDZ414ZITcYLg";
         RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
@@ -193,10 +194,47 @@ public class Registro extends AppCompatActivity {
                     tv_nombre.setText(name);
                     tv_apellidpaterno.setText(apellido_paterno +" " +apellido_materno);
 
-                progressDialog.dismiss();
-                    //https://quertium.com/api/v1/sunat/ruc/{ruc}
-                    // 20134052989  ruc eps
-                    // ruc telednica 20100017491
+
+                    if (apellido_paterno.equals("")){
+                        final String URL2="https://quertium.com/api/v1/reniec/dni/"+dni+"?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MTM3Mw.x-jUgUBcJukD5qZgqvBGbQVMxJFUAIDroZEm4Y9uTyg";
+                    //    Toast.makeText(Registro.this, "llego nulo", Toast.LENGTH_SHORT).show();
+
+                        RequestQueue requestQueue2= Volley.newRequestQueue(getApplicationContext());
+                        StringRequest stringRequest1 =new StringRequest(Request.Method.GET,URL2,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String responses) {
+                                try {
+                                    JSONObject jsonObject2=new JSONObject(responses);
+                                    //  JSONObject nombre=jsonObject.getJSONObject("nombres");
+                                    String name=jsonObject2.getString("primerNombre");
+                                    String name2=jsonObject2.getString("segundoNombre");
+                                    String apellido_paterno=jsonObject2.getString("apellidoMaterno");
+                                    String apellido_materno=jsonObject2.getString("apellidoMaterno");
+                                    tv_nombre.setText(name +" "+name2);
+                                    tv_apellidpaterno.setText(apellido_paterno +" " +apellido_materno);
+                                }
+                                catch (JSONException e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+
+                            }
+                        });
+                        int socketTimeout = 30000;
+                        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                        stringRequest1.setRetryPolicy(policy);
+                        requestQueue2.add(stringRequest1);
+
+                    }
+
+                    progressDialog.dismiss();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
