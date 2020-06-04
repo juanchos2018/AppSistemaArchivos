@@ -3,10 +3,12 @@ package com.document.appfiles.activitys;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -29,15 +31,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.actionsheet.ActionSheet;
 import com.document.appfiles.Clases.ClsArchivos;
 import com.document.appfiles.R;
+import com.document.appfiles.fragment.DialogoFragment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.common.internal.Objects;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,7 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class ListaArchivos extends AppCompatActivity {
+public class ListaArchivos extends AppCompatActivity  implements DialogoFragment.BootonClickLisntener{
 
 
     FirebaseStorage storage;
@@ -71,6 +77,7 @@ public class ListaArchivos extends AppCompatActivity {
     Uri uri;
     Uri pdfurl;
     String tipoarchivo,tipodocumento,correousuario;
+    TextView txtprueba;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,8 @@ public class ListaArchivos extends AppCompatActivity {
         correousuario=mAuth.getCurrentUser().getEmail();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         keycarpeta=getIntent().getStringExtra("key");
+        txtprueba=(TextView)findViewById(R.id.idtextotpueba);
+
         referencearchivos= FirebaseDatabase.getInstance().getReference("Archivos2").child(keycarpeta);
         recyclerView=findViewById(R.id.recylcercarchivos);
         imgbutton=(ImageButton)findViewById(R.id.id_imgbutton);
@@ -268,7 +277,6 @@ public class ListaArchivos extends AppCompatActivity {
 
     private void guardararchivo(final String tipodocumento, Uri uri, final String nombrearchivo) {
         if (uri==null){
-
             Toast.makeText(this, "no hay archivo we", Toast.LENGTH_SHORT).show();
         }
         else if (TextUtils.isEmpty(nombrearchivo)){
@@ -454,6 +462,7 @@ public class ListaArchivos extends AppCompatActivity {
                             final String nombre_carpeta=dataSnapshot.child("nombre_archivo").getValue().toString();
                             final String tipo=dataSnapshot.child("tipo_archivo").getValue().toString();
                             final String fecha=dataSnapshot.child("fecha_archivo").getValue().toString();
+                            final String ruta=dataSnapshot.child("ruta_archivo").getValue().toString();
 
                             items.txtnombrefile.setText(nombre_carpeta);
                             items.txtfecha.setText(fecha);
@@ -470,6 +479,18 @@ public class ListaArchivos extends AppCompatActivity {
                             if (tipo.equals("img")){
                                 items.imgfoto.setImageResource(R.drawable.ic_foto);
                             }
+
+                            items.itemView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                 //   otromensaje();
+                                   DialogoFragment bottomSheetDialog = DialogoFragment.newInstance();
+                                    bottomSheetDialog.nombredearchivo=nombre_carpeta;
+                                    bottomSheetDialog.ruta_archivo=ruta;
+//
+                                    bottomSheetDialog.show(getSupportFragmentManager(), "Bottom Sheet Dialog Fragment");
+                                }
+                            });
                         }
 
                     }
@@ -495,6 +516,67 @@ public class ListaArchivos extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.startListening();
 
+    }
+
+    private void funcion() {
+        DialogoFragment bottomSheetDialog = DialogoFragment.newInstance();
+        bottomSheetDialog.show(getSupportFragmentManager(), "Bottom Sheet Dialog Fragment");
+    }
+
+    public void  otromensaje(){
+        BottomSheetDialogFragment a =new BottomSheetDialogFragment();
+
+        Toast.makeText(this, "dialog fragmment", Toast.LENGTH_SHORT).show();
+        Dialog dialog =new Dialog(this);
+        final View contentView = View.inflate(this, R.layout.fragment_dialogo, null);
+        Button btn=(Button)contentView.findViewById(R.id.btonmensaje);
+       // Button btn2 =(Button)contentView.findViewById(R.id.tv_select_address);
+
+        TextView nombrearchivo;
+        nombrearchivo=(TextView)contentView.findViewById(R.id.idnombrearchivo);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  mensaje(nombredearchivo);
+            }
+        });
+
+        // alert  = builder1.create();
+
+    }
+    public void ButtonActionSheet() {
+        ActionSheet.createBuilder(this, getSupportFragmentManager())
+                .setCancelButtonTitle("Cancel")
+                .setOtherButtonTitles("item1", "item2")
+                .setCancelableOnTouchOutside(true)
+                .setListener(new ActionSheet.ActionSheetListener() {
+                    @Override
+                    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+
+                    }
+
+                    @Override
+                    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+
+                        if (index == 0) {
+                            Toast.makeText(ListaArchivos.this, "medotod 1", Toast.LENGTH_SHORT).show();
+
+                        } else if (index == 1) {
+
+                            Toast.makeText(ListaArchivos.this, "medotod 2", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onButtonclick(String texto) {
+  //  txtprueba.setText(texto);
+        mensaje(texto);
+    }
+    private void mensaje(String mensaje){
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 
     public  static class Items extends RecyclerView.ViewHolder{

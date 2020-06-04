@@ -7,7 +7,8 @@ public class ClsArchivos {
     String tipo_archivo;
     String peso_archivo;
     String fecha_archivo;
-String ruta_archivo;
+    String ruta_archivo;
+    String ruta_local_archivo;
     public ClsArchivos(){
 
     }

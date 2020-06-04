@@ -23,6 +23,13 @@
 
         </ImageButton>
 
+        <TextView
+            android:id="@+id/idtextotpueba"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recylcercarchivos"
             android:layout_width="match_parent"

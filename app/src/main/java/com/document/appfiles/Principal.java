@@ -8,6 +8,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,7 @@ public class Principal extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_archivos).setDrawerLayout(drawer).build();
+        R.id.nav_home,R.id.nav_archivos,R.id.nav_clientes,R.id.nav_colegas).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -62,7 +63,6 @@ public class Principal extends AppCompatActivity {
 
         if (currentUser != null){
             final String  user_uID = mAuth.getCurrentUser().getUid();
-
             userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(user_uID);
         }
 
@@ -96,6 +96,22 @@ public class Principal extends AppCompatActivity {
             userDatabaseReference.child("active_now").setValue("true");
 
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId()==R.id.action_settings){
+
+            if (currentUser != null){
+                // userDatabaseReference.child("active_now").setValue(ServerValue.TIMESTAMP);
+            }
+            mAuth.signOut();
+            logOutUser();
+        }
+        return super.onOptionsItemSelected(item);
     }
     private void logOutUser() {
 

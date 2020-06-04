@@ -22,5 +22,10 @@
         android:name="com.document.appfiles.ui.clientes.ClientesFragment"
         android:label="Clientes"
         tools:layout="@layout/clientes_fragment" />
+    <fragment
+        android:id="@+id/nav_colegas"
+        android:name="com.document.appfiles.ui.colegas.ColegasFragment"
+        android:label="Clientes"
+        tools:layout="@layout/colegas_fragment" />
 
 </navigation>
