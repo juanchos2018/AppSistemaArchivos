@@ -25,7 +25,13 @@
     <fragment
         android:id="@+id/nav_colegas"
         android:name="com.document.appfiles.ui.colegas.ColegasFragment"
-        android:label="Clientes"
+        android:label="Colegas"
         tools:layout="@layout/colegas_fragment" />
+
+    <fragment
+        android:id="@+id/nav_bandeja"
+        android:name="com.document.appfiles.ui.bandeja.BandejaFragment"
+        android:label="Bandeja"
+        tools:layout="@layout/bandeja_fragment" />
 
 </navigation>

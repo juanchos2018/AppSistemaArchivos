@@ -1,23 +1,30 @@
 package com.document.appfiles.Clases;
 
-public class ClsUsuarios {
+public class ClsColegas {
 
+    String key_usuario;
     String id_usuario;
     String nombre_usuario;
     String correo_usuario;
-    String cargo_usuario;
     String image_usuario;
 
-    public ClsUsuarios(){
+    public ClsColegas(){
 
     }
-
-    public ClsUsuarios(String id_usuario, String nombre_usuario, String correo_usuario, String cargo_usuario, String image_usuario) {
+    public ClsColegas(String key_usuario, String id_usuario, String nombre_usuario, String correo_usuario, String image_usuario) {
+        this.key_usuario = key_usuario;
         this.id_usuario = id_usuario;
         this.nombre_usuario = nombre_usuario;
         this.correo_usuario = correo_usuario;
-        this.cargo_usuario = cargo_usuario;
         this.image_usuario = image_usuario;
+    }
+
+    public String getKey_usuario() {
+        return key_usuario;
+    }
+
+    public void setKey_usuario(String key_usuario) {
+        this.key_usuario = key_usuario;
     }
 
     public String getId_usuario() {
@@ -42,14 +49,6 @@ public class ClsUsuarios {
 
     public void setCorreo_usuario(String correo_usuario) {
         this.correo_usuario = correo_usuario;
-    }
-
-    public String getCargo_usuario() {
-        return cargo_usuario;
-    }
-
-    public void setCargo_usuario(String cargo_usuario) {
-        this.cargo_usuario = cargo_usuario;
     }
 
     public String getImage_usuario() {

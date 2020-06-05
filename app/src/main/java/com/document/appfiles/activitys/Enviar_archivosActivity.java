@@ -1,26 +1,22 @@
-package com.document.appfiles.ui.colegas;
-
-import androidx.lifecycle.ViewModelProviders;
-
-import android.content.Intent;
-import android.os.Bundle;
+package com.document.appfiles.activitys;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.document.appfiles.Clases.ClsUsuarios;
+import com.document.appfiles.Clases.ClsColegas;
 import com.document.appfiles.R;
-import com.document.appfiles.activitys.BuscarColegasActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,24 +28,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ColegasFragment extends Fragment {
-
-    private ColegasViewModel mViewModel;
-
+public class Enviar_archivosActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     String id_usuario,nombre_usuario,foto_usuario;
     private DatabaseReference reference,reference2;
     RecyclerView recyclerView;
-    public static ColegasFragment newInstance() {
-        return new ColegasFragment();
-    }
-
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View vista = inflater.inflate(R.layout.colegas_fragment, container, false);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_enviar_archivos);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -71,38 +59,21 @@ public class ColegasFragment extends Fragment {
 
             }
         });
-        FloatingActionButton fab = vista.findViewById(R.id.fab3);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                buscarcolegas();
-            }
-        });
 
-        recyclerView=(RecyclerView)vista.findViewById(R.id.recylcercolegas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        return vista;
+        recyclerView=(RecyclerView)findViewById(R.id.recuclercolegasenviar);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void buscarcolegas() {
-        Intent intent=new Intent(getContext(), BuscarColegasActivity.class);
 
-        Bundle bundle=new Bundle();
-        bundle.putString("name",nombre_usuario);
-        bundle.putString("foto",foto_usuario);
-        intent.putExtras(bundle);
-        startActivity(intent);
-
-    }
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerOptions<ClsUsuarios> recyclerOptions = new FirebaseRecyclerOptions.Builder<ClsUsuarios>()
-                .setQuery(reference, ClsUsuarios.class).build();
-        FirebaseRecyclerAdapter<ClsUsuarios,Items> adapter =new FirebaseRecyclerAdapter<ClsUsuarios, Items>(recyclerOptions) {
+        FirebaseRecyclerOptions<ClsColegas> recyclerOptions = new FirebaseRecyclerOptions.Builder<ClsColegas>()
+                .setQuery(reference, ClsColegas.class).build();
+        FirebaseRecyclerAdapter<ClsColegas,Items> adapter =new FirebaseRecyclerAdapter<ClsColegas, Items>(recyclerOptions) {
             @Override
-            protected void onBindViewHolder(@NonNull final Items items, final int i, @NonNull ClsUsuarios claseesprofe) {
+            protected void onBindViewHolder(@NonNull final Items items, final int i, @NonNull ClsColegas claseesprofe) {
                 final String key = getRef(i).getKey();
                 reference.child(key).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -114,12 +85,19 @@ public class ColegasFragment extends Fragment {
                             items.tvcorreo.setText(correo);
                             items.tvtnombre.setText(nombre);
 
-                            Glide.with(getActivity().getApplicationContext())
+                            Glide.with(getApplicationContext())
                                     .load(image_usuario)
                                     .placeholder(R.drawable.default_profile_image)
                                     .fitCenter()
                                     .centerCrop()
                                     .into(items.imgcam);
+                            items.btnenviar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    items.btnenviar.setText("enviado");
+                                    Toast.makeText(Enviar_archivosActivity.this, "listo para enviar we", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                         }
                     }
@@ -134,7 +112,7 @@ public class ColegasFragment extends Fragment {
             @NonNull
             @Override
             public Items onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_colegas, parent, false);
+                View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_colegas_compartir, parent, false);
                 return new Items(vista);
 
             }
@@ -143,28 +121,25 @@ public class ColegasFragment extends Fragment {
         adapter.startListening();
 
     }
+
+    private void  enviar(String id_colega,String receptor,String ruta_archivo){
+
+    }
+
     public   class Items extends RecyclerView.ViewHolder{
         TextView tvtnombre,tvcorreo,tvcargo;
         ImageView imgcam;
         String id_usario,nombreclase;
-
+        Button  btnenviar;
 
         public Items(final View itemView) {
             super(itemView);
-            tvcorreo=(TextView)itemView.findViewById(R.id.id_tvcorreo1);
-            tvtnombre=(TextView)itemView.findViewById(R.id.id_nombre1);
-            imgcam=(ImageView)itemView.findViewById(R.id.id_imgperfil1);
+            tvcorreo=(TextView)itemView.findViewById(R.id.id_tvcorreo2);
+            tvtnombre=(TextView)itemView.findViewById(R.id.id_nombre2);
+            imgcam=(ImageView)itemView.findViewById(R.id.id_imgperfil2);
+            btnenviar=(Button)itemView.findViewById(R.id.id_btnenviar);
 
 
         }
     }
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ColegasViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }

@@ -4,6 +4,7 @@ package com.document.appfiles.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.document.appfiles.R;
+import com.document.appfiles.activitys.Enviar_archivosActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import net.glxn.qrgen.android.QRCode;
@@ -85,7 +87,11 @@ public class DialogoFragment extends BottomSheetDialogFragment {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onButtonclick("desde el framentedshet");
+             //   mListener.onButtonclick("desde el framentedshet");
+
+                Intent intent=new Intent(getContext(), Enviar_archivosActivity.class);
+                startActivity(intent);
+
                 dismiss();
             }
         });
