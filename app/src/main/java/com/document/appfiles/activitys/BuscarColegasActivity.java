@@ -124,6 +124,7 @@ public class BuscarColegasActivity extends AppCompatActivity {
                             items.tvcorreo.setText(correo);
                             items.tvtnombre.setText(nombre);
 
+
                             items.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

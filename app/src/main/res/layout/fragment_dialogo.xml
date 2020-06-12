@@ -15,6 +15,7 @@
 
 
         <LinearLayout
+            android:id="@+id/la1"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -30,7 +31,6 @@
             <TextView
                 android:id="@+id/idnombrearchivo"
                 android:textStyle="bold"
-
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
@@ -38,8 +38,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
-        </LinearLayout>
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@id/la1"
+            android:gravity="right"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btdesscarga"
+                android:text="Descargar"
+                android:layout_marginRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </Button>
+        </LinearLayout>
 
         <!--
         <TextView

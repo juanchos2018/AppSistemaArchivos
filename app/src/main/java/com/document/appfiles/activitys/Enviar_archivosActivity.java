@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.document.appfiles.Clases.ClsColegas;
+import com.document.appfiles.Clases.ClsEnvios;
 import com.document.appfiles.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,17 +35,50 @@ public class Enviar_archivosActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     String id_usuario,nombre_usuario,foto_usuario;
-    private DatabaseReference reference,reference2;
+    private DatabaseReference reference,reference2,referenceBandeja;
     RecyclerView recyclerView;
+
+   String nombre_archivo;
+   String ruta_archivo,tipo_docu,tipo_archi;
+   String peso_archivo;
+   ImageView imgg;
+    TextView txtnombre;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enviar_archivos);
 
+        imgg=(ImageView)findViewById(R.id.id_imgearchivo);
+        txtnombre=(TextView)findViewById(R.id.id_etnombrearchhivo);
+
+
+        nombre_archivo=getIntent().getStringExtra("name");
+        ruta_archivo  =getIntent().getStringExtra("ruta");
+        tipo_docu =getIntent().getStringExtra("tipo_doc");
+        tipo_archi =getIntent().getStringExtra("tipo_arc");
+        txtnombre.setText(nombre_archivo);
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         id_usuario= mAuth.getCurrentUser().getUid();
         reference= FirebaseDatabase.getInstance().getReference("MisColegas").child(id_usuario);
+        switch (tipo_archi){
+            case "doc":
+                imgg.setImageResource(R.drawable.logow1);
+                break;
+            case "docx":
+                imgg.setImageResource(R.drawable.logow1);
+                break;
+            case "pdf":
+                imgg.setImageResource(R.drawable.logopdf);
+                break;
+            case "ppt":
+                imgg.setImageResource(R.drawable.logoppt);
+                break;
+            case "pptx":
+                imgg.setImageResource(R.drawable.logoppt);
+                break;
+        }
 
         reference2= FirebaseDatabase.getInstance().getReference("Usuarios").child(id_usuario);
         reference2.addValueEventListener(new ValueEventListener() {
@@ -79,6 +115,7 @@ public class Enviar_archivosActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()){
+                            final String id_usu=dataSnapshot.child("id_usuario").getValue().toString();
                             final String correo=dataSnapshot.child("correo_usuario").getValue().toString();
                             final String nombre=dataSnapshot.child("nombre_usuario").getValue().toString();
                             final String image_usuario=dataSnapshot.child("image_usuario").getValue().toString();
@@ -94,7 +131,19 @@ public class Enviar_archivosActivity extends AppCompatActivity {
                             items.btnenviar.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    items.btnenviar.setText("enviado");
+
+                                    referenceBandeja=FirebaseDatabase.getInstance().getReference("Bandeja").child(id_usu);
+                                    String key =referenceBandeja.push().getKey();
+                                    ClsEnvios o=new ClsEnvios(key,id_usu,nombre_archivo,ruta_archivo,"10mv",tipo_docu,tipo_archi,"23-23-23");
+                                    referenceBandeja.child(key).setValue(o).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            items.btnenviar.setText("Enviado");
+                                        }
+                                    });
+
+
+
                                     Toast.makeText(Enviar_archivosActivity.this, "listo para enviar we", Toast.LENGTH_SHORT).show();
                                 }
                             });

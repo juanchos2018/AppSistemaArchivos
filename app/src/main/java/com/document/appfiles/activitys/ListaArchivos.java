@@ -76,7 +76,7 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
     String user_id,keycarpeta;
     Uri uri;
     Uri pdfurl;
-    String tipoarchivo,tipodocumento,correousuario;
+    String tipodocumento,tipoarchivo,correousuario;
     TextView txtprueba;
 
     @Override
@@ -148,40 +148,41 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
 
                     break;
                 case "doc":
-                    tipoarchivo="file";
-                    tipodocumento="doc";
+                    tipodocumento="file";
+                    tipoarchivo="doc";
+
                     break;
                 case "docx":
-                    tipoarchivo="file";
-                    tipodocumento="doc";
+                    tipodocumento="file";
+                    tipoarchivo="docx";
                     break;
                 case "pdf":
-                    tipoarchivo="file";
-                    tipodocumento="pdf";
+                    tipodocumento="file";
+                    tipoarchivo="pdf";;
                     break;
                 case "ppt":
-                    tipoarchivo="file";
-                    tipodocumento="ppt";
+                    tipodocumento="file";
+                    tipoarchivo="ppt";
                     break;
                 case "pptx":
-                    tipoarchivo="file";
-                    tipodocumento="ppt";
+                    tipodocumento="file";
+                    tipoarchivo="pptx";
                     break;
                 case "img":
                     tipoarchivo="img";
                     tipodocumento="img";
                     break;
                 case "jpg":
-                    tipoarchivo="img";
                     tipodocumento="img";
+                    tipoarchivo="img";
                     break;
                 case "jpeg":
-                    tipoarchivo="img";
                     tipodocumento="img";
+                    tipoarchivo="img";
                     break;
                 case "png":
-                    tipoarchivo="img";
                     tipodocumento="img";
+                    tipoarchivo="img";
                     break;
                 default:
                     tipodocumento="desconocido";
@@ -252,10 +253,10 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
         btnsaves.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tipoarchivo.equals("file")){
+                if (tipodocumento.equals("file")){
                     guardararchivo(tipodocumento,uri,nombrearchivo);
                 }
-                else if (tipoarchivo.equals("img")){
+                else if (tipodocumento.equals("img")){
                     imgprevia.setDrawingCacheEnabled(true);
                     imgprevia.buildDrawingCache();
                     Bitmap bitmap = ((BitmapDrawable) imgprevia.getDrawable()).getBitmap();
@@ -320,9 +321,12 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
                                 Date date = new Date();
                                 String fecha = dateFormat.format(date);
                                 Uri dowloand=task.getResult();
-                                //    progressDialog.dismiss();
+                                //    progressDialog.dismiss(); tipoarchivo="file";
+                                //                    tipodocumento="doc";
+                                //   String tipo_documento;   // fole   o img
+                                //String tipo_archivo; //ffile  o img  ppt jpt  png  xecl
                                 String key  = referencearchivos.push().getKey();
-                                ClsArchivos obj= new ClsArchivos(key,nombrearchivo,tipodocumento,"12",fecha,dowloand.toString());
+                                ClsArchivos obj= new ClsArchivos(key,nombrearchivo,tipodocumento,tipoarchivo,"12",fecha,dowloand.toString(),"");
                                 referencearchivos.child(key).setValue(obj);
 
 
@@ -406,7 +410,7 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
 
                                 String key  = referencearchivos.push().getKey();
 
-                                ClsArchivos obj= new ClsArchivos(key,nombrearhivo,tipodocumento,"12",fecha,dowloand.toString());
+                                ClsArchivos obj= new ClsArchivos(key,nombrearhivo,tipodocumento,tipoarchivo,"12",fecha,dowloand.toString(),"");
                                 referencearchivos.child(key).setValue(obj);
                             } else {
                                 Toast.makeText(ListaArchivos.this, "Error ", Toast.LENGTH_SHORT).show();
@@ -460,23 +464,31 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
 
                         if (dataSnapshot.exists()){
                             final String nombre_carpeta=dataSnapshot.child("nombre_archivo").getValue().toString();
-                            final String tipo=dataSnapshot.child("tipo_archivo").getValue().toString();
+
                             final String fecha=dataSnapshot.child("fecha_archivo").getValue().toString();
                             final String ruta=dataSnapshot.child("ruta_archivo").getValue().toString();
-
+                            final String tipo_documento=dataSnapshot.child("tipo_documento").getValue().toString();
+                            final String tipo_archivo=dataSnapshot.child("tipo_archivo").getValue().toString();
                             items.txtnombrefile.setText(nombre_carpeta);
                             items.txtfecha.setText(fecha);
 
-                            if (tipo.equals("ppt")){
+                            if (tipo_archivo.equals("ppt")){
                                 items.imgfoto.setImageResource(R.drawable.logoppt);
                             }
-                            if (tipo.equals("doc")){
+                            if (tipo_archivo.equals("pptx")) {
+
+                                items.imgfoto.setImageResource(R.drawable.logoppt);
+                            }
+                            if (tipo_archivo.equals("doc")){
                                  items.imgfoto.setImageResource(R.drawable.logow1);
                             }
-                            if (tipo.equals("pdf")){
+                            if (tipo_archivo.equals("docx")){
+                                items.imgfoto.setImageResource(R.drawable.logow1);
+                            }
+                            if (tipo_archivo.equals("pdf")){
                                 items.imgfoto.setImageResource(R.drawable.logopdf);
                             }
-                            if (tipo.equals("img")){
+                            if (tipo_archivo.equals("img")){
                                 items.imgfoto.setImageResource(R.drawable.ic_foto);
                             }
 
@@ -487,6 +499,8 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
                                    DialogoFragment bottomSheetDialog = DialogoFragment.newInstance();
                                     bottomSheetDialog.nombredearchivo=nombre_carpeta;
                                     bottomSheetDialog.ruta_archivo=ruta;
+                                    bottomSheetDialog.tipo_documento=tipo_documento;
+                                    bottomSheetDialog.tipo_archivo=tipo_archivo;
 //
                                     bottomSheetDialog.show(getSupportFragmentManager(), "Bottom Sheet Dialog Fragment");
                                 }

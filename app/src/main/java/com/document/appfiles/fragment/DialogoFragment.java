@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,8 @@ public class DialogoFragment extends BottomSheetDialogFragment {
 
    public String nombredearchivo;
    public String ruta_archivo;
+    public String tipo_documento;
+    public String tipo_archivo;
     private static final int CODIGO_PERMISO_ESCRIBIR_ALMACENAMIENTO = 1;
     private static final int ALTURA_CODIGO = 500, ANCHURA_CODIGO = 500;
 
@@ -62,7 +65,6 @@ public class DialogoFragment extends BottomSheetDialogFragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +75,30 @@ public class DialogoFragment extends BottomSheetDialogFragment {
         final View contentView = View.inflate(getContext(), R.layout.fragment_dialogo, null);
         Button btn=(Button)contentView.findViewById(R.id.btonmensaje);
         Button btn2 =(Button)contentView.findViewById(R.id.btncompartir);
+        Button btn3 =(Button)contentView.findViewById(R.id.btdesscarga);
 
         TextView nombrearchivo;
+        ImageView imgg;
+        imgg=(ImageView)contentView.findViewById(R.id.imgprevia);
+
+     switch (tipo_archivo){
+         case "doc":
+             imgg.setImageResource(R.drawable.logow1);
+             break;
+         case "docx":
+             imgg.setImageResource(R.drawable.logow1);
+             break;
+         case "pdf":
+             imgg.setImageResource(R.drawable.logopdf);
+             break;
+         case "ppt":
+             imgg.setImageResource(R.drawable.logoppt);
+             break;
+         case "pptx":
+             imgg.setImageResource(R.drawable.logoppt);
+             break;
+     }
+
         nombrearchivo=(TextView)contentView.findViewById(R.id.idnombrearchivo);
         nombrearchivo.setText(nombredearchivo);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -90,9 +114,26 @@ public class DialogoFragment extends BottomSheetDialogFragment {
              //   mListener.onButtonclick("desde el framentedshet");
 
                 Intent intent=new Intent(getContext(), Enviar_archivosActivity.class);
+
+                Bundle bundle= new Bundle();
+                bundle.putString("name",nombredearchivo);
+                bundle.putString("ruta",ruta_archivo);
+                bundle.putString("tipo_doc",tipo_documento);
+                bundle.putString("tipo_arc",tipo_archivo);
+
+
+                intent.putExtras(bundle);
                 startActivity(intent);
 
                 dismiss();
+            }
+        });
+
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Descargar(ruta_archivo);
+
             }
         });
         dialog.setContentView(contentView);
@@ -112,6 +153,19 @@ public class DialogoFragment extends BottomSheetDialogFragment {
             e.printStackTrace();
         }
 
+    }
+
+    private void Descargar(String ruta) {
+
+        if (TextUtils.isEmpty(ruta)){
+        //    Toast.makeText(getContext(), "no hay atchivo", Toast.LENGTH_SHORT).show();
+
+        }else{
+
+            Uri uri = Uri.parse(ruta);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }
     }
     private void mensaje(String nombrearchivo){
         builder1 = new AlertDialog.Builder(getContext());
