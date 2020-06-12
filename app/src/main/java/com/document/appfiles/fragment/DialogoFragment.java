@@ -132,13 +132,22 @@ public class DialogoFragment extends BottomSheetDialogFragment {
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Descargar(ruta_archivo);
+
+
+                if (tipo_documento.equals("file")){
+                    Descargar(ruta_archivo);
+                }
+                else if (tipo_documento.equals("img")){
+
+                }
+
 
             }
         });
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
+
 
     private void generarQr(){
         ByteArrayOutputStream byteArrayOutputStream = QRCode.from(ruta_archivo).withSize(ANCHURA_CODIGO, ALTURA_CODIGO).stream();

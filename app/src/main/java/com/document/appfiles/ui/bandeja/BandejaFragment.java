@@ -85,6 +85,25 @@ public class BandejaFragment extends Fragment {
                             items.txtnomnarchivo.setText(nombre_archivo);
                             items.txtfecha.setText(fecha);
 
+                            if (tipo_archivo.equals("ppt")){
+                                items.imgfoto.setImageResource(R.drawable.logoppt);
+                            }
+                            if (tipo_archivo.equals("pptx")) {
+
+                                items.imgfoto.setImageResource(R.drawable.logoppt);
+                            }
+                            if (tipo_archivo.equals("doc")){
+                                items.imgfoto.setImageResource(R.drawable.logow1);
+                            }
+                            if (tipo_archivo.equals("docx")){
+                                items.imgfoto.setImageResource(R.drawable.logow1);
+                            }
+                            if (tipo_archivo.equals("pdf")){
+                                items.imgfoto.setImageResource(R.drawable.logopdf);
+                            }
+                            if (tipo_archivo.equals("img")){
+                                items.imgfoto.setImageResource(R.drawable.ic_foto);
+                            }
                             items.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -134,6 +153,7 @@ public class BandejaFragment extends Fragment {
             super(itemView);
             txtnomnarchivo = (TextView) itemView.findViewById(R.id.id_tv_nombrearchivo2);
             txtfecha = (TextView) itemView.findViewById(R.id.id_tvfecha2);
+            imgfoto=(ImageView)itemView.findViewById(R.id.id_imgtipofoto2);
 
 
 
