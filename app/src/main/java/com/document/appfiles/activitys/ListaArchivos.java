@@ -3,22 +3,34 @@ package com.document.appfiles.activitys;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,9 +72,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class ListaArchivos extends AppCompatActivity  implements DialogoFragment.BootonClickLisntener{
 
-
+    private static final short REQUEST_CODE = 6545;
     FirebaseStorage storage;
     private DatabaseReference referencearchivos;
     private FirebaseAuth mAuth;
@@ -70,7 +85,7 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private ImageButton imgbutton;
-
+    private final int MIS_PERMISOS = 100;
     android.app.AlertDialog.Builder builder1;
     AlertDialog alert;
     String user_id,keycarpeta;
@@ -78,7 +93,7 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
     Uri pdfurl;
     String tipodocumento,tipoarchivo,correousuario;
     TextView txtprueba;
-
+    String ruta_archivo_descargar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +105,8 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
         correousuario=mAuth.getCurrentUser().getEmail();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         keycarpeta=getIntent().getStringExtra("key");
+        Log.e("ke",keycarpeta);
+
         txtprueba=(TextView)findViewById(R.id.idtextotpueba);
 
         referencearchivos= FirebaseDatabase.getInstance().getReference("Archivos2").child(keycarpeta);
@@ -103,6 +120,10 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+      //  if (solicitaPermisosVersionesSuperiores()) {
+      //
+      //  }
     }
 
     private void abrirgaleria() {
@@ -586,9 +607,159 @@ public class ListaArchivos extends AppCompatActivity  implements DialogoFragment
 
     @Override
     public void onButtonclick(String texto) {
-  //  txtprueba.setText(texto);
-        mensaje(texto);
+
+        DescargarFoto(texto);
     }
+
+
+    private void DescargarFoto(String ruta) {
+
+        if (TextUtils.isEmpty(ruta)){
+
+            Toast.makeText(this, "No hay link", Toast.LENGTH_SHORT).show();
+
+        }else{
+            ruta_archivo_descargar=ruta;
+            if (isDownloadManagerAvailable()) {
+                checkSelfPermission();
+            } else {
+                Toast.makeText(this, "El administrador de descargas no está disponible", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    public void download(View view) {
+        if (isDownloadManagerAvailable()) {
+            checkSelfPermission();
+        } else {
+            Toast.makeText(this, "Download manager is not available", Toast.LENGTH_LONG).show();
+        }
+
+    }
+    private static boolean isDownloadManagerAvailable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            return true;
+        }
+        return false;
+    }
+    private void checkSelfPermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE);
+
+        } else {
+
+            executeDownload(ruta_archivo_descargar);
+
+        }
+    }
+    private void executeDownload(String urlfoto) {
+
+        // registrer receiver in order to verify when download is complete
+        registerReceiver(new DonwloadCompleteReceiver(), new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlfoto));
+        Uri uri = Uri.parse(urlfoto);
+        String idruta= getExtension2(uri.getLastPathSegment());
+        request.setDescription("Descarga archivo " + idruta);
+        request.setTitle("Material");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            request.allowScanningByMediaScanner();
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        }
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,idruta);
+
+        // get download service and enqueue file
+        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+
+    }
+    public class DonwloadCompleteReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)){
+                Toast.makeText(context,"Descarga Completa", Toast.LENGTH_LONG).show();
+                // DO SOMETHING WITH THIS FILE
+            }
+        }
+    }
+    public static String getExtension2(String filename) {
+        int index = filename.lastIndexOf('/');
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode==MIS_PERMISOS){
+            if(grantResults.length==2 && grantResults[0]==PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED){//el dos representa los 2 permisos
+                Toast.makeText(getApplicationContext(),"Permisos concedidos",Toast.LENGTH_SHORT);
+               // imgFoto.setEnabled(true);
+            }
+        }else{
+            solicitarPermisosManual();
+        }
+
+        if (requestCode==REQUEST_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted! Do the work
+                executeDownload(ruta_archivo_descargar);
+            } else {
+                // permission denied!
+                Toast.makeText(this, "Please give permissions ", Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+    }
+    private void solicitarPermisosManual() {
+        //TODO es para otrad casaoas
+        final CharSequence[] opciones={"si","no"};
+        final AlertDialog.Builder alertOpciones=new AlertDialog.Builder(getBaseContext());//estamos en fragment
+        alertOpciones.setTitle("¿Desea configurar los permisos de forma manual?");
+        alertOpciones.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (opciones[i].equals("si")){
+                    Intent intent=new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri=Uri.fromParts("package",getBaseContext().getPackageName(),null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getBaseContext(),"Los permisos no fueron concedidos",Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        alertOpciones.show();
+    }
+    private void cargarDialogoRecomendacion() {
+        AlertDialog.Builder dialogo=new AlertDialog.Builder(getBaseContext());
+        dialogo.setTitle("Permisos Desactivados");
+        dialogo.setMessage("Debe aceptar los permisos para el correcto funcionamiento de la App");
+
+        dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA},100);
+            }
+        });
+        dialogo.show();
+    }
+
     private void mensaje(String mensaje){
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }

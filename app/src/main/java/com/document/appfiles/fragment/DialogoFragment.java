@@ -120,8 +120,6 @@ public class DialogoFragment extends BottomSheetDialogFragment {
                 bundle.putString("ruta",ruta_archivo);
                 bundle.putString("tipo_doc",tipo_documento);
                 bundle.putString("tipo_arc",tipo_archivo);
-
-
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -132,14 +130,14 @@ public class DialogoFragment extends BottomSheetDialogFragment {
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mListener.onButtonclick(ruta_archivo);
 
-
-                if (tipo_documento.equals("file")){
-                    Descargar(ruta_archivo);
-                }
-                else if (tipo_documento.equals("img")){
-
-                }
+              //  if (tipo_documento.equals("file")){
+              //      Descargar(ruta_archivo);
+              //  }
+              //  else if (tipo_documento.equals("img")){
+              //         mListener.onButtonclick(ruta_archivo);
+              //  }
 
 
             }
