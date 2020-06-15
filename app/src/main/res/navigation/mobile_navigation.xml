@@ -34,4 +34,10 @@
         android:label="Bandeja"
         tools:layout="@layout/bandeja_fragment" />
 
+    <fragment
+        android:id="@+id/nav_consultas"
+        android:name="com.document.appfiles.ui.consultas.ConsultasFragment"
+        android:label="Consultas"
+        tools:layout="@layout/consultas_fragment" />
+
 </navigation>
